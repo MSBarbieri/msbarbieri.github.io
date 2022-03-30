@@ -88,7 +88,7 @@ identifier = "github"
 pre = "<i class='fab fa-github fa-fw'></i>"
 post = ""
 name = ""
-url = "https://github.com/MSBarbieri/LoveIt"
+url = "https://github.com/MSBarbieri"
 title = "GitHub"
 weight = 6
 [languages.en.params]
@@ -284,7 +284,7 @@ identifier = "github"
 pre = "<i class='fab fa-github fa-fw'></i>"
 post = ""
 name = ""
-url = "https://github.com/MSBarbieri/LoveIt"
+url = "https://github.com/MSBarbieri"
 title = "GitHub"
 weight = 6
 [languages.pt-br.params]
@@ -428,7 +428,7 @@ version = "0.2.X"
 defaultTheme = "auto"
 # public git repo url only then enableGitInfo is true
 # 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
-gitRepo = "https://github.com/MSBarbieri/LoveIt"
+gitRepo = "https://github.com/MSBarbieri/msbarbieri.github.io"
 # which hash function used for SRI, when empty, no SRI is used ("sha256", "sha384", "sha512", "md5")
 # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI ("sha256", "sha384", "sha512", "md5")
 fingerprint = ""
@@ -845,8 +845,6 @@ codeFences = true
 guessSyntax = true
 lineNos = true
 lineNumbersInTable = true
-# false is a necessary configuration (https://github.com/MSBarbieri/LoveIt/issues/158)
-# false 是必要的设置 (https://github.com/MSBarbieri/LoveIt/issues/158)
 noClasses = false
 # Goldmark is from Hugo 0.60 the default library used for Markdown
 # Goldmark 是 Hugo 0.60 以来的默认 Markdown 解析库
