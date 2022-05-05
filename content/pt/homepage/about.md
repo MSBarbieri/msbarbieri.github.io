@@ -1,22 +1,19 @@
 ---
-title: Example Author
+title: Matheus Barbieri
 draft: false
-role: Example Role
-avatar: images/icon.png
-bio: Aenean vel bibendum quam. Aliquam at mollis quam. Proin efficitur.
-organization:
-  name: Example Organization
-  url: https://example.com/
+role: Software Engineer
+avatar: images/icon.jpeg
+bio: alguma bio ai nao preenchida
 social:
   - icon: envelope
     iconPack: fas
-    url: mailto:example@example.com
+    url: mailto:matheussouzabarbieri@gmail.com
   - icon: twitter
     iconPack: fab
-    url: https://example.com/
+    url: https://twitter.com/MSBarbieri_
   - icon: github
     iconPack: fab
-    url: https://example.com/
+    url: https://github.com/MSBarbieri
 
 weight: 1
 widget:
@@ -61,4 +58,3 @@ Donec mollis sollicitudin:
 - Aliquam eu leo vitae justo aliquam tincidunt.
 - Fusce non massa id augue interdum feugiat sed et nulla.
 - Vivamus molestie augue in tristique laoreet.
-

@@ -1,4 +1,4 @@
 ---
 title: Docs
-layout: doc-list
+Layout: doc-list
 ---
