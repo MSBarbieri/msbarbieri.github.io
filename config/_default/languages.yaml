@@ -4,8 +4,8 @@ en:
   # Uncomment for multilingual sites, and move the default content into corresponding sub-folder.
   contentDir: content/en
 
-pt:
-  languageCode: pt
-  languageName: Português
-  # Uncomment for multilingual sites, and move the default content into corresponding sub-folder.
-  contentDir: content/pt
+# pt:
+#   languageCode: pt
+#   languageName: Português
+#   # Uncomment for multilingual sites, and move the default content into corresponding sub-folder.
+#   contentDir: content/pt

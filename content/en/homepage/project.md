@@ -1,32 +1,34 @@
 ---
-title: Blank
+title: Personal projects
 draft: false
-
-weight: 5
+projects:
+  - title: FlowBuild
+    organization:
+      name: FlowBuild
+      url: https://flow-build.github.io/
+    writeup: >
+      A Open-source SaaS, capable of automate and integrate your entire company from infrastructure to Website.
+weight: 3
 widget:
-  handler: blank
+  handler: projects
 
   # Options: sm, md, lg and xl. Default is md.
-  width:
+  width: lg
 
   sidebar:
     # Options: left and right. Leave blank to hide.
-    position:
+    position: left
     # Options: sm, md, lg and xl. Default is md.
     scale:
-  
+
   background:
     # Options: primary, secondary, tertiary or any valid color value. Default is primary.
     color:
-    image: images/hero-left.jpg
+    image:
     # Options: auto, cover and contain. Default is auto.
-    size: cover
+    size:
     # Options: center, top, right, bottom, left.
     position:
     # Options: fixed, local, scroll.
-    attachment: 
+    attachment:
 ---
-
-<div style="text-align:center">
-  <p>Write anything you like here!</p>
-</div>

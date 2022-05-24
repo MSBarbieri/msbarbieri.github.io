@@ -2,29 +2,31 @@
 title: Experience
 draft: false
 experiences:
-  - title: Example Role 1
+  - title: Software Engineer
     organization:
-      name: Example Organization 1
-      url: https://example.org
-    dates: "2019 - Present"
-    location: Country
+      name: FreeLancer
+    dates: "2021 - Present"
+    location: Brazil
     writeup: >
-      Donec scelerisque egestas augue at tempor. Fusce faucibus magna in.
+      I leaved my job to work as a freelancer for the freedom and most import to me: being capable of make my personal researches.
 
-      - Suspendisse lacinia mauris a laoreet vehicula.
-
-      - Aenean tincidunt enim vitae ante blandit tempor.
-
-      - Nam tincidunt diam quis lorem rutrum ullamcorper.
-
-  - title: Example Role 2
+  - title: Software Engineer
     organization:
-      name: Example Organization 2
-      url: https://example.org
-    dates: "2017 - 2019"
-    location: Country
+      name: FDTE-DSD
+      url: https://www.fdte.org.br/home
+    dates: "2019 - 2021"
+    location: Brazil
     writeup: >
-      **Aliquam** at **rutrum** ante. In sed quam faucibus.
+      I worked as Consultant Software Engineer, helping their clients to improve their IT area.
+
+  - title: Software Engineer
+    organization:
+      name: Fieldlink
+      url: https://www.fieldlink.com
+    dates: "2018 - 2019"
+    location: Brazil
+    writeup: >
+      Worked as a Software Engineer, developing web and mobile applications focused on  IOT and Geolocalization technologies.
 
 weight: 3
 widget:
