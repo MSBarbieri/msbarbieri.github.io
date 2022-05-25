@@ -1,3 +1,3 @@
-[submodule "themes/LoveIt"]
-	path = themes/LoveIt
-	url = git@github.com:MSBarbieri/LoveIt
+[submodule "themes/eureka"]
+	path = themes/eureka
+	url = https://github.com/wangchucheng/hugo-eureka.git
