@@ -1,4 +1,151 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Matheus Barbieri</title><link>/</link><description>Recent content on Matheus Barbieri</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&amp;copy; 2022 Matheus de Souza Barbieri</copyright><lastBuildDate>Wed, 25 May 2022 16:39:45 -0300</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Automate Delivery specification with ArgoCD ApplicationSet</title><link>/posts/argo-application-set/</link><pubDate>Wed, 25 May 2022 16:39:45 -0300</pubDate><guid>/posts/argo-application-set/</guid><description>I&amp;rsquo;m without motivation enough to write a post talking about how a delivery pipeline should be, how to relate real-state x desired-state or why you should use this or that, i particularly prefer ArgoCD by a simple resource called ApplicationSet.
-ArgoCD&amp;rsquo;s ApplicationSet is a awesome feature to a delivery pipeline.
-it make you specify in a manifest how and where k8s manifests should be applied the argocd read the applications sets, and create a pipeline which will apply source from parameters into destinations</description></item><item><title>Managing multi-cluster secrets with Sealed Secrets</title><link>/posts/sealled-secrets/</link><pubDate>Wed, 04 May 2022 18:00:38 -0300</pubDate><guid>/posts/sealled-secrets/</guid><description>One of the most hard problems i have found dealing with multiple-cluster in my jobs is dealing with secrets management, create secrets for each cluster, being sure that secret works, and store them safely.
-Having a proper control of this issue always be a big mess, mostly because this easily become a safety issue most of the time in companies i have passed, someone have all the secrets stored in their machine or in some dark and scared place, or all of the secrets start to be stored in one private repository where every one in a point of the time will have the access or other horrible solution like that.</description></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>MSbarbieri Blog</title><link>https://www.msbarbieri.dev/</link><description>Personal tech blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>matheussouzabarbieri@gmail.com (matheus barbieri)</managingEditor><webMaster>matheussouzabarbieri@gmail.com (matheus barbieri)</webMaster><lastBuildDate>Wed, 25 May 2022 16:39:45 -0300</lastBuildDate><atom:link href="https://www.msbarbieri.dev/index.xml" rel="self" type="application/rss+xml"/><item><title>Automate Delivery specification with ArgoCD ApplicationSet</title><link>https://www.msbarbieri.dev/argo-application-set/</link><pubDate>Wed, 25 May 2022 16:39:45 -0300</pubDate><author>matheus barbieri</author><guid>https://www.msbarbieri.dev/argo-application-set/</guid><description><![CDATA[<p>I&rsquo;m without motivation enough to write a post talking about how a delivery pipeline should be, how to relate real-state x desired-state or why you should use this or that, i particularly prefer ArgoCD by a simple resource called ApplicationSet.</p>
+<p>ArgoCD&rsquo;s ApplicationSet is a awesome feature to a delivery pipeline.</p>
+<p><!-- raw HTML omitted --> it make you specify in a manifest how and where k8s manifests should be applied<!-- raw HTML omitted -->
+the argocd read the applications sets, and create a pipeline which will apply source from parameters into destinations</p>
+<p>You have a lot of features to that and i strongly recommend you to look on the <a href="https://argocd-applicationset.readthedocs.io/en/stable/" target="_blank" rel="noopener noreffer ">DOC</a>, but here i will show you how to use the basic, and how i like to use.</p>
+<p>The basic structure to an ApplicationSet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">&lt;RESOURCE_NAME&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">&lt;CLUSTER_NAME&gt;</span> <span style="color:#75715e"># variable name could be local, dev prod</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">&lt;CLLUSTER_URL&gt;</span> <span style="color:#75715e"># https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">&lt;NAMESPACE&gt;</span> <span style="color:#75715e"># another variable</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># &lt;VAR_KEY&gt;: &lt;VAR_VALUE&gt; any var you want for the generate application-set</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">&lt;APPLICATION_NAME&gt;</span> <span style="color:#75715e"># the name of application applied will be local-appllications</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;LABEL_NAME&gt;</span>: <span style="color:#ae81ff">&lt;LABEL_VALUE&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">project</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">destination</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server</span>: <span style="color:#e6db74">&#39;{{url}}&#39;</span> <span style="color:#75715e"># the cluster you want ArgoCD apply the manifest</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span> <span style="color:#75715e"># the namespace you want this to be applied</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>: <span style="color:#75715e"># an example of source in a specific repo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">&lt;REPOSITORY URL&gt;.git</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">&lt;BRANCH&gt;</span> <span style="color:#75715e"># default in HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">&lt;PATH_OF_KUBERNETES_MANIFEST&gt;</span>
+</span></span></code></pre></div><p>the argocd is capable to read directly from a repository or a helm chart, and is capable of read different types of inputs, like a classic kubernetes resource, kustomize and others.</p>
+<blockquote>
+<p>ℹ️ one of my favorite tricks is to point to a helm path in a github repository, with this you will know automatically if a new version of</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">sealed-secrets-helm-chart</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">sealed-secrets</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;sealed-secrets-{{cluster}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      labels: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        type: &#34;security&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        cluster: &#34;{{cluster}}&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    spec:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      project: default
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      destination:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        server: &#39;</span>{{<span style="color:#ae81ff">url}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">https://github.com/bitnami-labs/sealed-secrets</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">helm/sealed-secrets</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">syncPolicy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">syncOptions</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#ae81ff">CreateNamespace=true</span>
+</span></span></code></pre></div><p>this example will install <!-- raw HTML omitted -->Sealed Secrets<!-- raw HTML omitted --> using helm structure but using git repo.</p>
+<p>And you can construct an repo with multiple application-sets to be installed and create an application-set to check if has a new application-sets to be added.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">application-set</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">argocd</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;{{cluster}}-applications&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">general</span>: <span style="color:#e6db74">&#39;{{cluster}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">all</span>: <span style="color:#e6db74">&#39;argocd&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">project</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">destination</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server</span>: <span style="color:#e6db74">&#39;{{url}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">https://github.com/MSBarbieri/Argocd-Application-Sets.git</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">syncPolicy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">automated</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">prune</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">allowEmpty</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">selfHeal</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">retry</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">limit</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">backoff</span>: 
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">duration</span>: <span style="color:#ae81ff">5s</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">factor</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">maxDuration</span>: <span style="color:#ae81ff">3m0s</span>
+</span></span></code></pre></div><p>ArgoCD is one of the most powerful and extendable delivery pipeline application i have founded until today, and you should at test.</p>
+]]></description></item><item><title>Managing multi-cluster secrets with Sealed Secrets</title><link>https://www.msbarbieri.dev/sealled-secrets/</link><pubDate>Wed, 04 May 2022 18:00:38 -0300</pubDate><author>matheus barbieri</author><guid>https://www.msbarbieri.dev/sealled-secrets/</guid><description><![CDATA[<p>One of the most hard problems i have found dealing with multiple-cluster in my jobs is dealing with secrets management, create secrets for each cluster, being sure that secret works, and store them safely.</p>
+<p>Having a proper control of this issue always be a big mess, mostly because this easily become a safety issue
+most of the time in companies i have passed, someone have all the secrets stored in their machine or in some dark and scared place, or all of the secrets start to be stored in one private repository where every one in a point of the time will have the access or other horrible solution like that.</p>
+<p>In my researches about developer experience i have found some people talking about one open-source project called <!-- raw HTML omitted -->Sealed Secrets<!-- raw HTML omitted --> and in the moment i looked for it, i instantly fall in love.</p>
+<p>The concept is really simple and powerful i an application focused on kubernetes, which receive some data and encrypt it and transform into an k8s custom resource.</p>
+<p>At first you may think &ldquo;why do i need this, i can only place my secret in my cluster right?&rdquo;
+well yes, but when we start to create custom pipelines to improve our deployment process, create multiple clusters, or increase a lot our internal applications, store this secrets and apply them again become a real problem.</p>
+<p>With sealed secrets we can create the secret based on a specific certificate, and store them anywhere we want, and in the moment we apply that sealed-secret the service will generate the real secret.</p>
+<h2 id="installing">Installing</h2>
+<h3 id="installing-sealed-secrets">Installing sealed secrets</h3>
+<pre tabindex="0"><code>kubectl create namespace sealed-secrets
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm install sealed-secrets sealed-secrets/sealed-secrets --namespace sealed-secrets --version 2.1.8
+</code></pre><h3 id="installing-cli">Installing cli</h3>
+<p>Enter on <a href="https://github.com/bitnami-labs/sealed-secrets/releases/tag/v0.17.5" target="_blank" rel="noopener noreffer ">Release URL</a> and download the version for your machine, in my case will be linux-amd64, here we will do this using wget.</p>
+<pre tabindex="0"><code>wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz
+tar -xzf kubeseal-0.17.5-linux-amd64.tar.gz
+sudo mv kubeseal /usr/local/bin/
+</code></pre><h2 id="how-to">How To</h2>
+<h3 id="creating-a--new-secret">Creating a  new secret</h3>
+<h4 id="key-value-secret">Key Value Secret</h4>
+<pre tabindex="0"><code>kubectl create secret generic &lt;YOUR_SECRET&gt; --dry-run=client --from-literal=&lt;KEY&gt;=&lt;VALUE&gt; -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml &gt; &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h4 id="file-secret">File Secret</h4>
+<pre tabindex="0"><code>kubectl create secret generic &lt;YOUR_SECRET&gt; --dry-run=client --from-file=&lt;FILE&gt; -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml &gt; &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h3 id="applying-sealed-secret">Applying sealed secret</h3>
+<pre tabindex="0"><code>kubectl create -f &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h2 id="certificate-management">Certificate Management</h2>
+<p>The sealed secret controller with generate certificates when is deployed, and will generate new certificate at some period of time, but you can add your own certificates.</p>
+<blockquote>
+<p>ℹ️ when a new certificate is added, the old ones isn&rsquo;t deleted, so old generated sealed secrets can be added again if you have the cert applied.</p>
+</blockquote>
+<h3 id="adding-a-new-cert">adding a new cert</h3>
+<pre tabindex="0"><code>kubectl -n sealed-secrets create secret tls &lt;CERT_NAME&gt; --cert=&lt;PUBLIC_KEY_FILE&gt; --key=&lt;PRIVATE_KEY_FILE&gt;
+kubectl -n sealed-secrets label secret &lt;CERT_NAME&gt; sealedsecrets.bitnami.com/sealed-secrets-key=active
+</code></pre><p>after that restart the sealed secrets controller pod, and you are good to go, now you can get all the encrypted secrets you created and can put into a repository without fear.</p>
+<p>This are the first steps to deal with sealed secrets, if you want to understand more about what Sealed Secrets really works i recommended you to follow the <a href="https://github.com/bitnami-labs/sealed-secrets" target="_blank" rel="noopener noreffer ">Project Repository</a>.</p>
+]]></description></item></channel></rss>

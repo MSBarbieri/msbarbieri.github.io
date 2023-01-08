@@ -1,3 +1,107 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CD on Matheus Barbieri</title><link>/categories/cd/</link><description>Recent content in CD on Matheus Barbieri</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&amp;copy; 2022 Matheus de Souza Barbieri</copyright><lastBuildDate>Wed, 25 May 2022 16:39:45 -0300</lastBuildDate><atom:link href="/categories/cd/index.xml" rel="self" type="application/rss+xml"/><item><title>Automate Delivery specification with ArgoCD ApplicationSet</title><link>/posts/argo-application-set/</link><pubDate>Wed, 25 May 2022 16:39:45 -0300</pubDate><guid>/posts/argo-application-set/</guid><description>I&amp;rsquo;m without motivation enough to write a post talking about how a delivery pipeline should be, how to relate real-state x desired-state or why you should use this or that, i particularly prefer ArgoCD by a simple resource called ApplicationSet.
-ArgoCD&amp;rsquo;s ApplicationSet is a awesome feature to a delivery pipeline.
-it make you specify in a manifest how and where k8s manifests should be applied the argocd read the applications sets, and create a pipeline which will apply source from parameters into destinations</description></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>CD - Category - MSbarbieri Blog</title><link>https://www.msbarbieri.dev/categories/cd/</link><description>CD - Category - MSbarbieri Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>matheussouzabarbieri@gmail.com (matheus barbieri)</managingEditor><webMaster>matheussouzabarbieri@gmail.com (matheus barbieri)</webMaster><lastBuildDate>Wed, 25 May 2022 16:39:45 -0300</lastBuildDate><atom:link href="https://www.msbarbieri.dev/categories/cd/" rel="self" type="application/rss+xml"/><item><title>Automate Delivery specification with ArgoCD ApplicationSet</title><link>https://www.msbarbieri.dev/argo-application-set/</link><pubDate>Wed, 25 May 2022 16:39:45 -0300</pubDate><author>matheus barbieri</author><guid>https://www.msbarbieri.dev/argo-application-set/</guid><description><![CDATA[<p>I&rsquo;m without motivation enough to write a post talking about how a delivery pipeline should be, how to relate real-state x desired-state or why you should use this or that, i particularly prefer ArgoCD by a simple resource called ApplicationSet.</p>
+<p>ArgoCD&rsquo;s ApplicationSet is a awesome feature to a delivery pipeline.</p>
+<p><!-- raw HTML omitted --> it make you specify in a manifest how and where k8s manifests should be applied<!-- raw HTML omitted -->
+the argocd read the applications sets, and create a pipeline which will apply source from parameters into destinations</p>
+<p>You have a lot of features to that and i strongly recommend you to look on the <a href="https://argocd-applicationset.readthedocs.io/en/stable/" target="_blank" rel="noopener noreffer ">DOC</a>, but here i will show you how to use the basic, and how i like to use.</p>
+<p>The basic structure to an ApplicationSet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">&lt;RESOURCE_NAME&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">&lt;CLUSTER_NAME&gt;</span> <span style="color:#75715e"># variable name could be local, dev prod</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">&lt;CLLUSTER_URL&gt;</span> <span style="color:#75715e"># https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">&lt;NAMESPACE&gt;</span> <span style="color:#75715e"># another variable</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># &lt;VAR_KEY&gt;: &lt;VAR_VALUE&gt; any var you want for the generate application-set</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">&lt;APPLICATION_NAME&gt;</span> <span style="color:#75715e"># the name of application applied will be local-appllications</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;LABEL_NAME&gt;</span>: <span style="color:#ae81ff">&lt;LABEL_VALUE&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">project</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">destination</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server</span>: <span style="color:#e6db74">&#39;{{url}}&#39;</span> <span style="color:#75715e"># the cluster you want ArgoCD apply the manifest</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span> <span style="color:#75715e"># the namespace you want this to be applied</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>: <span style="color:#75715e"># an example of source in a specific repo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">&lt;REPOSITORY URL&gt;.git</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">&lt;BRANCH&gt;</span> <span style="color:#75715e"># default in HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">&lt;PATH_OF_KUBERNETES_MANIFEST&gt;</span>
+</span></span></code></pre></div><p>the argocd is capable to read directly from a repository or a helm chart, and is capable of read different types of inputs, like a classic kubernetes resource, kustomize and others.</p>
+<blockquote>
+<p>ℹ️ one of my favorite tricks is to point to a helm path in a github repository, with this you will know automatically if a new version of</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">sealed-secrets-helm-chart</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">sealed-secrets</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;sealed-secrets-{{cluster}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      labels: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        type: &#34;security&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        cluster: &#34;{{cluster}}&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    spec:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      project: default
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      destination:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        server: &#39;</span>{{<span style="color:#ae81ff">url}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">https://github.com/bitnami-labs/sealed-secrets</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">helm/sealed-secrets</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">syncPolicy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">syncOptions</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#ae81ff">CreateNamespace=true</span>
+</span></span></code></pre></div><p>this example will install <!-- raw HTML omitted -->Sealed Secrets<!-- raw HTML omitted --> using helm structure but using git repo.</p>
+<p>And you can construct an repo with multiple application-sets to be installed and create an application-set to check if has a new application-sets to be added.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">argoproj.io/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ApplicationSet</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">application-set</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">generators</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">list</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">elements</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">url</span>: <span style="color:#ae81ff">https://kubernetes.default.svc</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">argocd</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;{{cluster}}-applications&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">general</span>: <span style="color:#e6db74">&#39;{{cluster}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">all</span>: <span style="color:#e6db74">&#39;argocd&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">project</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">destination</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server</span>: <span style="color:#e6db74">&#39;{{url}}&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#39;{{namespace}}&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repoURL</span>: <span style="color:#ae81ff">https://github.com/MSBarbieri/Argocd-Application-Sets.git</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">targetRevision</span>: <span style="color:#ae81ff">HEAD</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">syncPolicy</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">automated</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">prune</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">allowEmpty</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">selfHeal</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">retry</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">limit</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">backoff</span>: 
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">duration</span>: <span style="color:#ae81ff">5s</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">factor</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">maxDuration</span>: <span style="color:#ae81ff">3m0s</span>
+</span></span></code></pre></div><p>ArgoCD is one of the most powerful and extendable delivery pipeline application i have founded until today, and you should at test.</p>
+]]></description></item></channel></rss>

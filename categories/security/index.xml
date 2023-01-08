@@ -1,2 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Security on Matheus Barbieri</title><link>/categories/security/</link><description>Recent content in Security on Matheus Barbieri</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&amp;copy; 2022 Matheus de Souza Barbieri</copyright><lastBuildDate>Wed, 04 May 2022 18:00:38 -0300</lastBuildDate><atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml"/><item><title>Managing multi-cluster secrets with Sealed Secrets</title><link>/posts/sealled-secrets/</link><pubDate>Wed, 04 May 2022 18:00:38 -0300</pubDate><guid>/posts/sealled-secrets/</guid><description>One of the most hard problems i have found dealing with multiple-cluster in my jobs is dealing with secrets management, create secrets for each cluster, being sure that secret works, and store them safely.
-Having a proper control of this issue always be a big mess, mostly because this easily become a safety issue most of the time in companies i have passed, someone have all the secrets stored in their machine or in some dark and scared place, or all of the secrets start to be stored in one private repository where every one in a point of the time will have the access or other horrible solution like that.</description></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Security - Category - MSbarbieri Blog</title><link>https://www.msbarbieri.dev/categories/security/</link><description>Security - Category - MSbarbieri Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>matheussouzabarbieri@gmail.com (matheus barbieri)</managingEditor><webMaster>matheussouzabarbieri@gmail.com (matheus barbieri)</webMaster><lastBuildDate>Wed, 04 May 2022 18:00:38 -0300</lastBuildDate><atom:link href="https://www.msbarbieri.dev/categories/security/" rel="self" type="application/rss+xml"/><item><title>Managing multi-cluster secrets with Sealed Secrets</title><link>https://www.msbarbieri.dev/sealled-secrets/</link><pubDate>Wed, 04 May 2022 18:00:38 -0300</pubDate><author>matheus barbieri</author><guid>https://www.msbarbieri.dev/sealled-secrets/</guid><description><![CDATA[<p>One of the most hard problems i have found dealing with multiple-cluster in my jobs is dealing with secrets management, create secrets for each cluster, being sure that secret works, and store them safely.</p>
+<p>Having a proper control of this issue always be a big mess, mostly because this easily become a safety issue
+most of the time in companies i have passed, someone have all the secrets stored in their machine or in some dark and scared place, or all of the secrets start to be stored in one private repository where every one in a point of the time will have the access or other horrible solution like that.</p>
+<p>In my researches about developer experience i have found some people talking about one open-source project called <!-- raw HTML omitted -->Sealed Secrets<!-- raw HTML omitted --> and in the moment i looked for it, i instantly fall in love.</p>
+<p>The concept is really simple and powerful i an application focused on kubernetes, which receive some data and encrypt it and transform into an k8s custom resource.</p>
+<p>At first you may think &ldquo;why do i need this, i can only place my secret in my cluster right?&rdquo;
+well yes, but when we start to create custom pipelines to improve our deployment process, create multiple clusters, or increase a lot our internal applications, store this secrets and apply them again become a real problem.</p>
+<p>With sealed secrets we can create the secret based on a specific certificate, and store them anywhere we want, and in the moment we apply that sealed-secret the service will generate the real secret.</p>
+<h2 id="installing">Installing</h2>
+<h3 id="installing-sealed-secrets">Installing sealed secrets</h3>
+<pre tabindex="0"><code>kubectl create namespace sealed-secrets
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm install sealed-secrets sealed-secrets/sealed-secrets --namespace sealed-secrets --version 2.1.8
+</code></pre><h3 id="installing-cli">Installing cli</h3>
+<p>Enter on <a href="https://github.com/bitnami-labs/sealed-secrets/releases/tag/v0.17.5" target="_blank" rel="noopener noreffer ">Release URL</a> and download the version for your machine, in my case will be linux-amd64, here we will do this using wget.</p>
+<pre tabindex="0"><code>wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz
+tar -xzf kubeseal-0.17.5-linux-amd64.tar.gz
+sudo mv kubeseal /usr/local/bin/
+</code></pre><h2 id="how-to">How To</h2>
+<h3 id="creating-a--new-secret">Creating a  new secret</h3>
+<h4 id="key-value-secret">Key Value Secret</h4>
+<pre tabindex="0"><code>kubectl create secret generic &lt;YOUR_SECRET&gt; --dry-run=client --from-literal=&lt;KEY&gt;=&lt;VALUE&gt; -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml &gt; &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h4 id="file-secret">File Secret</h4>
+<pre tabindex="0"><code>kubectl create secret generic &lt;YOUR_SECRET&gt; --dry-run=client --from-file=&lt;FILE&gt; -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml &gt; &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h3 id="applying-sealed-secret">Applying sealed secret</h3>
+<pre tabindex="0"><code>kubectl create -f &lt;SEALED_SECRET_FILE&gt;.yaml
+</code></pre><h2 id="certificate-management">Certificate Management</h2>
+<p>The sealed secret controller with generate certificates when is deployed, and will generate new certificate at some period of time, but you can add your own certificates.</p>
+<blockquote>
+<p>ℹ️ when a new certificate is added, the old ones isn&rsquo;t deleted, so old generated sealed secrets can be added again if you have the cert applied.</p>
+</blockquote>
+<h3 id="adding-a-new-cert">adding a new cert</h3>
+<pre tabindex="0"><code>kubectl -n sealed-secrets create secret tls &lt;CERT_NAME&gt; --cert=&lt;PUBLIC_KEY_FILE&gt; --key=&lt;PRIVATE_KEY_FILE&gt;
+kubectl -n sealed-secrets label secret &lt;CERT_NAME&gt; sealedsecrets.bitnami.com/sealed-secrets-key=active
+</code></pre><p>after that restart the sealed secrets controller pod, and you are good to go, now you can get all the encrypted secrets you created and can put into a repository without fear.</p>
+<p>This are the first steps to deal with sealed secrets, if you want to understand more about what Sealed Secrets really works i recommended you to follow the <a href="https://github.com/bitnami-labs/sealed-secrets" target="_blank" rel="noopener noreffer ">Project Repository</a>.</p>
+]]></description></item></channel></rss>
