@@ -88,7 +88,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     [params.header.title]
       logo = ""
       name = "Matheus Barbieri"
-      pre = "<i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i>"
+      pre = ""
       post = ""
       typeit = false
 
@@ -137,10 +137,10 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       gravatarEmail = ""
       avatarURL = "/images/icon.jpeg"
       title = "Matheus Barbieri"
-      subtitle = "A Clean, Elegant but Advanced Hugo Theme"
+      subtitle = "Talking about Software Development and other stuffs."
       typeit = false
       social = true
-      disclaimer = "foo bar baz"
+      disclaimer = ""
     [params.home.posts]
       enable = true
       paginate = 6
